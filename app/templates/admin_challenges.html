@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Manage Challenges - SkillQuest{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.admin_dashboard') }}">Admin</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Challenges</li>
+    </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Manage Challenges</h2>
+    <a class="btn btn-primary" href="{{ url_for('main.create_challenge') }}">Create Challenge</a>
+</div>
+
+{% if challenges %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Difficulty</th>
+                <th>Deadline</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in challenges %}
+            <tr>
+                <td><a href="{{ url_for('main.admin_challenge_detail', challenge_id=c.id) }}">{{ c.title }}</a></td>
+                <td>{{ c.category }}</td>
+                <td><span class="badge bg-{{ 'success' if c.difficulty == 'Easy' else 'warning' if c.difficulty == 'Medium' else 'danger' }}">{{ c.difficulty }}</span></td>
+                <td>{% if c.deadline %}{{ c.deadline.strftime('%Y-%m-%d') }}{% else %}—{% endif %}</td>
+                <td>{{ c.created_at.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    <a class="btn btn-sm btn-outline-primary" href="{{ url_for('main.edit_challenge', challenge_id=c.id) }}">Edit</a>
+                    <form method="post" action="{{ url_for('main.delete_challenge', challenge_id=c.id) }}" class="d-inline" onsubmit="return confirm('Delete this challenge?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">No challenges yet. <a href="{{ url_for('main.create_challenge') }}">Create one</a>.</div>
+{% endif %}
+{% endblock %}

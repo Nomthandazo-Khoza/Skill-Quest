@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Challenges - SkillQuest{% endblock %}
+{% block content %}
+<h2>Challenges</h2>
+<p class="text-muted">Browse available challenges. Log in as a student to submit your work.</p>
+{% if challenges %}
+<div class="list-group">
+    {% for c in challenges %}
+    <a href="{{ url_for('main.challenge_detail', challenge_id=c.id) }}" class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ c.title }}</h5>
+            <span class="badge bg-{{ 'success' if c.difficulty == 'Easy' else 'warning' if c.difficulty == 'Medium' else 'danger' }} rounded-pill">{{ c.difficulty }}</span>
+        </div>
+        <p class="mb-1">{{ c.description[:150] }}{% if c.description|length > 150 %}...{% endif %}</p>
+        <small class="text-muted">{{ c.category }} · Deadline: {% if c.deadline %}{{ c.deadline.strftime('%Y-%m-%d') }}{% else %}None{% endif %}</small>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<p>No challenges available yet.</p>
+{% endif %}
+{% endblock %}

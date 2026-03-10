@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Edit Challenge - SkillQuest{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.admin_dashboard') }}">Admin</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('main.admin_challenges_list') }}">Challenges</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('main.admin_challenge_detail', challenge_id=challenge.id) }}">{{ challenge.title }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Edit</li>
+    </ol>
+</nav>
+
+<h2>Edit Challenge</h2>
+<form method="post" action="{{ url_for('main.edit_challenge', challenge_id=challenge.id) }}" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.title.label(class="form-label") }}
+        {{ form.title(class="form-control") }}
+        {% if form.title.errors %}
+            <div class="text-danger small">{{ form.title.errors[0] }}</div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        {{ form.description.label(class="form-label") }}
+        {{ form.description(class="form-control", rows=5) }}
+        {% if form.description.errors %}
+            <div class="text-danger small">{{ form.description.errors[0] }}</div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        {{ form.category.label(class="form-label") }}
+        {{ form.category(class="form-control") }}
+        {% if form.category.errors %}
+            <div class="text-danger small">{{ form.category.errors[0] }}</div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        {{ form.difficulty.label(class="form-label") }}
+        {{ form.difficulty(class="form-select") }}
+        {% if form.difficulty.errors %}
+            <div class="text-danger small">{{ form.difficulty.errors[0] }}</div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        {{ form.deadline.label(class="form-label") }}
+        {{ form.deadline(class="form-control", placeholder="YYYY-MM-DD") }}
+        {% if form.deadline.errors %}
+            <div class="text-danger small">{{ form.deadline.errors[0] }}</div>
+        {% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">Update Challenge</button>
+    <a class="btn btn-secondary" href="{{ url_for('main.admin_challenge_detail', challenge_id=challenge.id) }}">Cancel</a>
+    <a class="btn btn-outline-secondary" href="{{ url_for('main.admin_challenges_list') }}">Back to list</a>
+</form>
+{% endblock %}

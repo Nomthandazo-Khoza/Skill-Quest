@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Submit - {{ challenge.title }} - SkillQuest{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.challenges_list') }}">Challenges</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('main.challenge_detail', challenge_id=challenge.id) }}">{{ challenge.title }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Submit</li>
+    </ol>
+</nav>
+
+<h2>Submit: {{ challenge.title }}</h2>
+<form method="post" action="{{ url_for('main.submit_challenge', challenge_id=challenge.id) }}" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.text_answer.label(class="form-label") }}
+        {{ form.text_answer(class="form-control", rows=8) }}
+        {% if form.text_answer.errors %}
+            <div class="text-danger">{{ form.text_answer.errors[0] }}</div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        {{ form.file_name.label(class="form-label") }}
+        {{ form.file_name(class="form-control") }}
+        {% if form.file_name.errors %}
+            <div class="text-danger">{{ form.file_name.errors[0] }}</div>
+        {% endif %}
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+    <a class="btn btn-secondary" href="{{ url_for('main.challenge_detail', challenge_id=challenge.id) }}">Cancel</a>
+</form>
+{% endblock %}

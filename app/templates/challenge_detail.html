@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ challenge.title }} - SkillQuest{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.challenges_list') }}">Challenges</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ challenge.title }}</li>
+    </ol>
+</nav>
+
+<h2>{{ challenge.title }}</h2>
+<p>
+    <span class="badge bg-secondary">{{ challenge.category }}</span>
+    <span class="badge bg-{{ 'success' if challenge.difficulty == 'Easy' else 'warning' if challenge.difficulty == 'Medium' else 'danger' }}">{{ challenge.difficulty }}</span>
+    {% if challenge.deadline %}
+    <span class="text-muted">Deadline: {{ challenge.deadline.strftime('%Y-%m-%d') }}</span>
+    {% endif %}
+</p>
+<div class="card mb-4">
+    <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">Description</h6>
+        <p class="card-text">{{ challenge.description }}</p>
+    </div>
+</div>
+
+<div class="d-flex gap-2 flex-wrap">
+    {% if current_user.is_authenticated and current_user.role.name == 'Student' %}
+    <a class="btn btn-primary" href="{{ url_for('main.submit_challenge', challenge_id=challenge.id) }}">Submit your work</a>
+    {% endif %}
+    {% if admin %}
+    <a class="btn btn-outline-primary" href="{{ url_for('main.edit_challenge', challenge_id=challenge.id) }}">Edit</a>
+    <form method="post" action="{{ url_for('main.delete_challenge', challenge_id=challenge.id) }}" class="d-inline" onsubmit="return confirm('Delete this challenge?');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-outline-danger">Delete</button>
+    </form>
+    <a class="btn btn-secondary" href="{{ url_for('main.admin_challenges_list') }}">Back to list</a>
+    {% endif %}
+</div>
+{% endblock %}

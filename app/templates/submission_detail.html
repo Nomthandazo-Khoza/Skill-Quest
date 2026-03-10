@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Submission - {{ submission.challenge.title }} - SkillQuest{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        {% if admin_view %}
+        <li class="breadcrumb-item"><a href="{{ url_for('main.admin_dashboard') }}">Admin</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('main.admin_submissions_list') }}">Submissions</a></li>
+        {% else %}
+        <li class="breadcrumb-item"><a href="{{ url_for('main.my_submissions') }}">My Submissions</a></li>
+        {% endif %}
+        <li class="breadcrumb-item active" aria-current="page">{{ submission.challenge.title }}</li>
+    </ol>
+</nav>
+
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Submission for {{ submission.challenge.title }}</span>
+        <span class="badge bg-{% if (submission.status or 'Pending')|lower == 'pending' %}secondary{% elif (submission.status or '')|lower == 'reviewed' %}success{% elif (submission.status or '')|lower == 'late' %}warning{% else %}danger{% endif %}">{{ submission.status or 'Pending' }}</span>
+    </div>
+    <div class="card-body">
+        <p><strong>Submitted:</strong> {{ submission.submitted_at.strftime('%Y-%m-%d %H:%M') }}</p>
+        {% if admin_view %}
+        <p><strong>Student:</strong> {{ submission.user.full_name }} ({{ submission.user.email }})</p>
+        {% endif %}
+        <p><strong>Score:</strong> {% if submission.score is not none %}{{ submission.score }}{% else %}—{% endif %}</p>
+        {% if submission.reviewed_at %}
+        <p><strong>Reviewed:</strong> {{ submission.reviewed_at.strftime('%Y-%m-%d %H:%M') }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">Answer</div>
+    <div class="card-body">
+        <p class="card-text">{{ submission.text_answer or '—' }}</p>
+        {% if submission.file_name %}
+        <p class="text-muted small mb-0">File: {{ submission.file_name }}</p>
+        {% endif %}
+    </div>
+</div>
+
+{% if submission.feedback %}
+<div class="card mb-4 border-primary">
+    <div class="card-header">Feedback</div>
+    <div class="card-body">
+        <p class="card-text">{{ submission.feedback }}</p>
+    </div>
+</div>
+{% endif %}
+
+<div class="d-flex gap-2">
+    {% if admin_view %}
+    <a class="btn btn-primary" href="{{ url_for('main.review_submission', submission_id=submission.id) }}">Review / Edit score</a>
+    <a class="btn btn-secondary" href="{{ url_for('main.admin_submissions_list') }}">Back to list</a>
+    {% else %}
+    <a class="btn btn-secondary" href="{{ url_for('main.my_submissions') }}">Back to my submissions</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('main.challenge_detail', challenge_id=submission.challenge_id) }}">View challenge</a>
+    {% endif %}
+</div>
+{% endblock %}

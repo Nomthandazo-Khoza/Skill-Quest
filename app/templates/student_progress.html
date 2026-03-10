@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}My Progress - SkillQuest{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.student_dashboard') }}">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Progress</li>
+    </ol>
+</nav>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="card-title">Progress by Challenge</h2>
+        <p class="text-muted mb-0">See which challenges you've submitted and your status, score, and feedback.</p>
+        {% if progress %}
+        <p class="mb-0 mt-2">Completion: <strong>{{ progress.completed_challenges }} / {{ progress.total_challenges }}</strong> challenges · Average score: {% if progress.average_score is not none %}{{ "%.1f"|format(progress.average_score) }}{% else %}N/A{% endif %}</p>
+        {% endif %}
+    </div>
+</div>
+
+{% if challenge_rows %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Challenge</th>
+                <th>Category</th>
+                <th>Deadline</th>
+                <th>Submission Status</th>
+                <th>Score</th>
+                <th>Feedback</th>
+                <th>Submitted</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in challenge_rows %}
+            <tr>
+                <td><a href="{{ url_for('main.challenge_detail', challenge_id=row.challenge.id) }}">{{ row.challenge.title }}</a></td>
+                <td>{{ row.challenge.category }}</td>
+                <td>{% if row.challenge.deadline %}{{ row.challenge.deadline.strftime('%Y-%m-%d') }}{% else %}—{% endif %}</td>
+                <td>
+                    {% if row.submission %}
+                    <span class="badge bg-{% if (row.submission.status or 'Pending')|lower == 'pending' %}warning{% elif (row.submission.status or '')|lower == 'reviewed' %}success{% elif (row.submission.status or '')|lower == 'late' %}warning{% else %}danger{% endif %}">{{ row.submission.status or 'Pending' }}</span>
+                    {% else %}
+                    <span class="badge bg-secondary">Not Submitted</span>
+                    {% endif %}
+                </td>
+                <td>{% if row.submission and row.submission.score is not none %}{{ row.submission.score }}{% else %}—{% endif %}</td>
+                <td>{% if row.submission and row.submission.feedback %}{{ row.submission.feedback[:40] }}{% if row.submission.feedback|length > 40 %}...{% endif %}{% else %}—{% endif %}</td>
+                <td>{% if row.submission %}{{ row.submission.submitted_at.strftime('%Y-%m-%d %H:%M') }}{% else %}—{% endif %}</td>
+                <td>
+                    {% if row.submission %}
+                    <a class="btn btn-sm btn-outline-primary" href="{{ url_for('main.my_submission_detail', submission_id=row.submission.id) }}">View</a>
+                    {% else %}
+                    <a class="btn btn-sm btn-primary" href="{{ url_for('main.submit_challenge', challenge_id=row.challenge.id) }}">Submit</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">No challenges available yet.</div>
+{% endif %}
+
+<a class="btn btn-secondary" href="{{ url_for('main.student_dashboard') }}">Back to dashboard</a>
+{% endblock %}

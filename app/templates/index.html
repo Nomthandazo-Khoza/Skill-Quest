@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Home - SkillQuest{% endblock %}
+{% block content %}
+<div class="jumbotron py-5 bg-light rounded">
+    <h1 class="display-4">SkillQuest</h1>
+    <p class="lead">A student skill-building platform. Take weekly challenges, submit your work, earn scores, and track your progress.</p>
+    <hr class="my-4">
+    {% if current_user.is_authenticated %}
+    <p>Welcome back, <strong>{{ current_user.full_name }}</strong>.</p>
+    <a class="btn btn-primary btn-lg" href="{% if current_user.role.name == 'Admin' %}{{ url_for('main.admin_dashboard') }}{% elif current_user.role.name == 'Mentor' %}{{ url_for('main.mentor_dashboard') }}{% else %}{{ url_for('main.student_dashboard') }}{% endif %}" role="button">Dashboard</a>
+    <a class="btn btn-outline-secondary btn-lg" href="{{ url_for('main.challenges_list') }}" role="button">View Challenges</a>
+    {% else %}
+    <p>Register as a Student, Mentor, or Admin to get started.</p>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('main.register') }}" role="button">Register</a>
+    <a class="btn btn-outline-primary btn-lg" href="{{ url_for('main.login') }}" role="button">Login</a>
+    <a class="btn btn-outline-secondary btn-lg" href="{{ url_for('main.challenges_list') }}" role="button">View Challenges</a>
+    {% endif %}
+</div>
+{% endblock %}

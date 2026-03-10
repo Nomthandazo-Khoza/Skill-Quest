@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}My Submissions - SkillQuest{% endblock %}
+{% block content %}
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="card-title">My Submissions</h2>
+        <p class="text-muted mb-0">View your challenge submissions, scores, and feedback.</p>
+    </div>
+</div>
+
+{% if submissions %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Challenge</th>
+                <th>Submitted</th>
+                <th>Status</th>
+                <th>Score</th>
+                <th>Feedback</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in submissions %}
+            <tr>
+                <td><a href="{{ url_for('main.challenge_detail', challenge_id=s.challenge_id) }}">{{ s.challenge.title }}</a></td>
+                <td>{{ s.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td><span class="badge bg-{% if (s.status or 'Pending')|lower == 'pending' %}secondary{% elif (s.status or '')|lower == 'reviewed' %}success{% elif (s.status or '')|lower == 'late' %}warning{% else %}danger{% endif %}">{{ s.status or 'Pending' }}</span></td>
+                <td>{% if s.score is not none %}{{ s.score }}{% else %}—{% endif %}</td>
+                <td>{% if s.feedback %}{{ s.feedback[:50] }}{% if s.feedback|length > 50 %}...{% endif %}{% else %}—{% endif %}</td>
+                <td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('main.my_submission_detail', submission_id=s.id) }}">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">
+    <p class="mb-0">You have not submitted any challenges yet.</p>
+    <a class="btn btn-sm btn-primary mt-2" href="{{ url_for('main.challenges_list') }}">Browse challenges</a>
+</div>
+{% endif %}
+{% endblock %}

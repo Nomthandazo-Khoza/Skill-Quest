@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}{{ student.full_name }} - Progress - SkillQuest{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.admin_dashboard') }}">Admin</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('main.admin_progress') }}">Progress</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ student.full_name }}</li>
+    </ol>
+</nav>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="card-title">{{ student.full_name }}</h2>
+        <p class="text-muted mb-0">{{ student.email }}</p>
+    </div>
+</div>
+
+{% if progress %}
+<div class="row g-2 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card bg-light">
+            <div class="card-body text-center py-2">
+                <h6 class="mb-0">{{ progress.total_submissions }}</h6>
+                <small class="text-muted">Submissions</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-light">
+            <div class="card-body text-center py-2">
+                <h6 class="mb-0">{{ progress.completed_challenges }} / {{ progress.total_challenges }}</h6>
+                <small class="text-muted">Completed</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-light">
+            <div class="card-body text-center py-2">
+                <h6 class="mb-0">{{ progress.total_score }}</h6>
+                <small class="text-muted">Total Score</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-light">
+            <div class="card-body text-center py-2">
+                <h6 class="mb-0">{% if progress.average_score is not none %}{{ "%.1f"|format(progress.average_score) }}{% else %}N/A{% endif %}</h6>
+                <small class="text-muted">Avg Score</small>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mb-4">
+    <h6 class="text-muted">Completion rate</h6>
+    <div class="progress" style="height: 1.5rem;">
+        <div class="progress-bar" style="width: {{ progress.completion_rate }}%;">{{ progress.completion_rate }}%</div>
+    </div>
+</div>
+{% endif %}
+
+<h5>Submissions</h5>
+{% if submissions %}
+<div class="table-responsive mb-4">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Challenge</th>
+                <th>Status</th>
+                <th>Score</th>
+                <th>Submitted</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in submissions %}
+            <tr>
+                <td>{{ s.challenge.title }}</td>
+                <td><span class="badge bg-{% if (s.status or 'Pending')|lower == 'pending' %}secondary{% elif (s.status or '')|lower == 'reviewed' %}success{% elif (s.status or '')|lower == 'late' %}warning{% else %}danger{% endif %}">{{ s.status or 'Pending' }}</span></td>
+                <td>{% if s.score is not none %}{{ s.score }}{% else %}—{% endif %}</td>
+                <td>{{ s.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('main.admin_submission_detail', submission_id=s.id) }}">View</a> <a class="btn btn-sm btn-primary" href="{{ url_for('main.review_submission', submission_id=s.id) }}">Review</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="text-muted">No submissions yet.</p>
+{% endif %}
+
+<h5>Progress by Challenge</h5>
+{% if challenge_rows %}
+<div class="table-responsive">
+    <table class="table table-sm table-striped">
+        <thead>
+            <tr>
+                <th>Challenge</th>
+                <th>Status</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in challenge_rows %}
+            <tr>
+                <td>{{ row.challenge.title }}</td>
+                <td>{% if row.submission %}<span class="badge bg-{% if (row.submission.status or 'Pending')|lower == 'pending' %}warning{% else %}success{% endif %}">{{ row.submission.status or 'Pending' }}</span>{% else %}<span class="badge bg-secondary">Not Submitted</span>{% endif %}</td>
+                <td>{% if row.submission and row.submission.score is not none %}{{ row.submission.score }}{% else %}—{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<a class="btn btn-secondary mt-3" href="{{ url_for('main.admin_progress') }}">Back to progress list</a>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Student Progress - Mentor - SkillQuest{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.mentor_dashboard') }}">Mentor</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Progress</li>
+    </ol>
+</nav>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="card-title">Student Progress (read-only)</h2>
+        <p class="text-muted mb-0">View submission and completion stats. Only admins can review or score.</p>
+    </div>
+</div>
+
+{% if student_stats %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Email</th>
+                <th>Submissions</th>
+                <th>Completed</th>
+                <th>Reviewed</th>
+                <th>Total Score</th>
+                <th>Avg Score</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user, stats in student_stats %}
+            <tr>
+                <td>{{ user.full_name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ stats.total_submissions }}</td>
+                <td>{{ stats.completed_challenges }} / {{ stats.total_challenges }}</td>
+                <td>{{ stats.reviewed_count }}</td>
+                <td>{{ stats.total_score }}</td>
+                <td>{% if stats.average_score is not none %}{{ "%.1f"|format(stats.average_score) }}{% else %}N/A{% endif %}</td>
+                <td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('main.mentor_student_progress', user_id=user.id) }}">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">No students found.</div>
+{% endif %}
+
+<a class="btn btn-secondary" href="{{ url_for('main.mentor_dashboard') }}">Back to dashboard</a>
+{% endblock %}

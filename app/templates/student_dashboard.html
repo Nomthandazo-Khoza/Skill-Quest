@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard - SkillQuest{% endblock %}
+{% block content %}
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="card-title">Student Dashboard</h2>
+        <p class="text-muted mb-0">Welcome, <strong>{{ current_user.full_name }}</strong>.</p>
+        <span class="badge bg-primary mt-2">Role: {{ current_user.role.name }}</span>
+    </div>
+</div>
+
+{% if progress %}
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card bg-light h-100">
+            <div class="card-body text-center py-3">
+                <h5 class="card-title mb-0">{{ progress.total_challenges }}</h5>
+                <small class="text-muted">Total Challenges</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card bg-light h-100">
+            <div class="card-body text-center py-3">
+                <h5 class="card-title mb-0">{{ progress.total_submissions }}</h5>
+                <small class="text-muted">My Submissions</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card bg-light h-100">
+            <div class="card-body text-center py-3">
+                <h5 class="card-title mb-0 text-success">{{ progress.reviewed_count }}</h5>
+                <small class="text-muted">Reviewed</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card bg-light h-100">
+            <div class="card-body text-center py-3">
+                <h5 class="card-title mb-0 text-warning">{{ progress.pending_count }}</h5>
+                <small class="text-muted">Pending</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card bg-light h-100">
+            <div class="card-body text-center py-3">
+                <h5 class="card-title mb-0">{{ progress.total_score }}</h5>
+                <small class="text-muted">Total Score</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card bg-light h-100">
+            <div class="card-body text-center py-3">
+                <h5 class="card-title mb-0">{% if progress.average_score is not none %}{{ "%.1f"|format(progress.average_score) }}{% else %}N/A{% endif %}</h5>
+                <small class="text-muted">Average Score</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h6 class="card-subtitle text-muted mb-2">Completion rate</h6>
+        <div class="d-flex align-items-center">
+            <div class="progress flex-grow-1" style="height: 1.5rem;">
+                <div class="progress-bar" role="progressbar" style="width: {{ progress.completion_rate }}%;" aria-valuenow="{{ progress.completion_rate }}" aria-valuemin="0" aria-valuemax="100">{{ progress.completion_rate }}%</div>
+            </div>
+            <span class="ms-2">{{ progress.completed_challenges }} / {{ progress.total_challenges }} challenges</span>
+        </div>
+    </div>
+</div>
+
+<div class="mb-3">
+    <a class="btn btn-outline-primary me-2" href="{{ url_for('main.student_progress') }}">View progress by challenge</a>
+    <a class="btn btn-outline-secondary" href="{{ url_for('main.challenges_list') }}">Browse challenges</a>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Recent Submissions</span>
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('main.my_submissions') }}">View all</a>
+            </div>
+            <div class="card-body">
+                {% if submissions %}
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Challenge</th>
+                                <th>Status</th>
+                                <th>Score</th>
+                                <th>Submitted</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in submissions %}
+                            <tr>
+                                <td>{{ s.challenge.title }}</td>
+                                <td><span class="badge bg-{% if (s.status or 'Pending')|lower == 'pending' %}secondary{% elif (s.status or '')|lower == 'reviewed' %}success{% elif (s.status or '')|lower == 'late' %}warning{% else %}danger{% endif %}">{{ s.status or 'Pending' }}</span></td>
+                                <td>{% if s.score is not none %}{{ s.score }}{% else %}—{% endif %}</td>
+                                <td>{{ s.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('main.my_submission_detail', submission_id=s.id) }}">View</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="mb-0">You have not submitted any challenges yet.</p>
+                <a class="btn btn-sm btn-outline-primary mt-2" href="{{ url_for('main.challenges_list') }}">Browse challenges</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">Available Challenges</div>
+            <div class="card-body">
+                {% if challenges %}
+                <ul class="list-group list-group-flush">
+                    {% for c in challenges %}
+                    <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                        <a href="{{ url_for('main.challenge_detail', challenge_id=c.id) }}">{{ c.title }}</a>
+                        <span class="badge bg-{{ 'success' if c.difficulty == 'Easy' else 'warning' if c.difficulty == 'Medium' else 'danger' }} rounded-pill">{{ c.difficulty }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="mb-0">No challenges available yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

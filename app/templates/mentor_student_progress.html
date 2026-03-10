@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ student.full_name }} - Progress - SkillQuest{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.mentor_dashboard') }}">Mentor</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('main.mentor_progress') }}">Progress</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ student.full_name }}</li>
+    </ol>
+</nav>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="card-title">{{ student.full_name }}</h2>
+        <p class="text-muted mb-0">{{ student.email }}</p>
+    </div>
+</div>
+
+{% if progress %}
+<div class="row g-2 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card bg-light">
+            <div class="card-body text-center py-2">
+                <h6 class="mb-0">{{ progress.total_submissions }}</h6>
+                <small class="text-muted">Submissions</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-light">
+            <div class="card-body text-center py-2">
+                <h6 class="mb-0">{{ progress.completed_challenges }} / {{ progress.total_challenges }}</h6>
+                <small class="text-muted">Completed</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-light">
+            <div class="card-body text-center py-2">
+                <h6 class="mb-0">{{ progress.total_score }}</h6>
+                <small class="text-muted">Total Score</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-light">
+            <div class="card-body text-center py-2">
+                <h6 class="mb-0">{% if progress.average_score is not none %}{{ "%.1f"|format(progress.average_score) }}{% else %}N/A{% endif %}</h6>
+                <small class="text-muted">Avg Score</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<h5>Submissions</h5>
+{% if submissions %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Challenge</th>
+                <th>Status</th>
+                <th>Score</th>
+                <th>Submitted</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in submissions %}
+            <tr>
+                <td>{{ s.challenge.title }}</td>
+                <td><span class="badge bg-{% if (s.status or 'Pending')|lower == 'pending' %}secondary{% elif (s.status or '')|lower == 'reviewed' %}success{% else %}warning{% endif %}">{{ s.status or 'Pending' }}</span></td>
+                <td>{% if s.score is not none %}{{ s.score }}{% else %}—{% endif %}</td>
+                <td>{{ s.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="text-muted">No submissions yet.</p>
+{% endif %}
+
+<a class="btn btn-secondary mt-3" href="{{ url_for('main.mentor_progress') }}">Back to progress list</a>
+{% endblock %}

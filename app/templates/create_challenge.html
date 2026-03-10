@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Create Challenge - SkillQuest{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.admin_dashboard') }}">Admin</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('main.admin_challenges_list') }}">Challenges</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Create</li>
+    </ol>
+</nav>
+<h2>Create Challenge</h2>
+<form method="post" action="{{ url_for('main.create_challenge') }}" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.title.label(class="form-label") }}
+        {{ form.title(class="form-control") }}
+        {% if form.title.errors %}
+            <div class="text-danger">{{ form.title.errors[0] }}</div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        {{ form.description.label(class="form-label") }}
+        {{ form.description(class="form-control", rows=5) }}
+        {% if form.description.errors %}
+            <div class="text-danger">{{ form.description.errors[0] }}</div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        {{ form.category.label(class="form-label") }}
+        {{ form.category(class="form-control") }}
+        {% if form.category.errors %}
+            <div class="text-danger">{{ form.category.errors[0] }}</div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        {{ form.difficulty.label(class="form-label") }}
+        {{ form.difficulty(class="form-select") }}
+        {% if form.difficulty.errors %}
+            <div class="text-danger">{{ form.difficulty.errors[0] }}</div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        {{ form.deadline.label(class="form-label") }}
+        {{ form.deadline(class="form-control", placeholder="YYYY-MM-DD") }}
+        {% if form.deadline.errors %}
+            <div class="text-danger">{{ form.deadline.errors[0] }}</div>
+        {% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">Save Challenge</button>
+    <a class="btn btn-secondary" href="{{ url_for('main.admin_challenges_list') }}">Cancel</a>
+</form>
+{% endblock %}
