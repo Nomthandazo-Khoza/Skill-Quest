@@ -3,6 +3,7 @@ SkillQuest - Flask routes and views.
 Handles GET/POST, CRUD, flash messages, redirects, and role-based access.
 Uses Flask-Login for session handling; login_required and require_role for protection.
 """
+from datetime import datetime
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
 from app import db
@@ -274,7 +275,6 @@ def create_challenge():
     """Admin: create challenge (GET form, POST create)."""
     form = ChallengeForm()
     if form.validate_on_submit():
-        from datetime import datetime
         deadline = None
         if form.deadline.data:
             try:
@@ -313,7 +313,6 @@ def edit_challenge(challenge_id):
     challenge = Challenge.query.get_or_404(challenge_id)
     form = ChallengeForm()
     if form.validate_on_submit():
-        from datetime import datetime
         challenge.title = form.title.data.strip()
         challenge.description = form.description.data
         challenge.category = form.category.data.strip()
@@ -361,18 +360,24 @@ def submit_challenge(challenge_id):
     challenge = Challenge.query.get_or_404(challenge_id)
     form = SubmissionForm()
     if form.validate_on_submit():
+        status = "Pending"
+        if challenge.deadline and datetime.utcnow() > challenge.deadline:
+            status = "Late"
         submission = Submission(
             user_id=current_user.id,
             challenge_id=challenge.id,
             text_answer=form.text_answer.data.strip(),
             file_name=form.file_name.data.strip() or None,
-            status="Pending",
+            status=status,
         )
         db.session.add(submission)
         if challenge not in current_user.participated_challenges:
             current_user.participated_challenges.append(challenge)
         db.session.commit()
-        flash("Submission received. Good luck!", "success")
+        if status == "Late":
+            flash("Submission received. It was submitted after the deadline and marked as Late.", "warning")
+        else:
+            flash("Submission received. Good luck!", "success")
         return redirect(url_for("main.my_submissions"))
     return render_template("submit_challenge.html", form=form, challenge=challenge)
 
@@ -425,7 +430,6 @@ def admin_submission_detail(submission_id):
 @require_role("Admin")
 def review_submission(submission_id):
     """Admin: review submission. GET: form. POST: update score, status, feedback; set reviewed_at."""
-    from datetime import datetime
     submission = Submission.query.get_or_404(submission_id)
     form = ReviewSubmissionForm()
     if form.validate_on_submit():

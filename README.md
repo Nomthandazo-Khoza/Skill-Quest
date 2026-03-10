@@ -60,7 +60,10 @@ skillquest/
 | Action              | Command              |
 |---------------------|----------------------|
 | Install dependencies| `pip install -r requirements.txt` |
+| Install test deps   | `pip install -r requirements-dev.txt` |
 | Run the app         | `python run.py`      |
+| Run tests           | `pytest tests/ -v`   |
+| Run tests with coverage | `pytest tests/ -v --cov=app` |
 
 Database file: `instance/skillquest.db` (created on first run).
 

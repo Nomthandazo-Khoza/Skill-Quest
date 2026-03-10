@@ -1,9 +1,21 @@
 """
 SkillQuest - Flask-WTF forms with validation.
 """
+from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, TextAreaField, SelectField, SubmitField, FloatField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, NumberRange
+from wtforms import ValidationError
+
+
+def optional_date(form, field):
+    """If provided, value must be YYYY-MM-DD."""
+    if not field.data or not field.data.strip():
+        return
+    try:
+        datetime.strptime(field.data.strip(), "%Y-%m-%d")
+    except ValueError:
+        raise ValidationError("Deadline must be in YYYY-MM-DD format.")
 
 
 class RegistrationForm(FlaskForm):
@@ -33,7 +45,7 @@ class ChallengeForm(FlaskForm):
         choices=[("Easy", "Easy"), ("Medium", "Medium"), ("Hard", "Hard")],
         validators=[DataRequired()],
     )
-    deadline = StringField("Deadline (optional, YYYY-MM-DD)", validators=[Optional()])
+    deadline = StringField("Deadline (optional, YYYY-MM-DD)", validators=[Optional(), optional_date])
     submit = SubmitField("Save Challenge")
 
 

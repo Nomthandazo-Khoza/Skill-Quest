@@ -1,1 +1,353 @@
-/* SkillQuest - optional custom styles */
+/* SkillQuest – project-wide style (landing colours applied everywhere) */
+
+:root {
+    /* SkillQuest palette – dark blue/charcoal, bright blue, white/light grey */
+    --sq-font-sans: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --sq-primary: #1e5f8a;
+    --sq-primary-hover: #164a6d;
+    --sq-primary-light: rgba(30, 95, 138, 0.12);
+    --sq-dark: #1a2b42;
+    --sq-dark-bg: #0d1b2a;
+    --sq-hero-bg: linear-gradient(135deg, #1e3a5f 0%, #0d1b2a 50%, #1b263b 100%);
+    --sq-hero-text: #f8f9fa;
+    --sq-hero-muted: rgba(248, 249, 250, 0.85);
+    --sq-accent: #3a7ca5;
+    --sq-body-bg: #f4f6f8;
+    --sq-card-border: rgba(30, 95, 138, 0.2);
+    --sq-text-muted: #5c6b7a;
+}
+
+/* Override Bootstrap to use SkillQuest primary everywhere */
+:root {
+    --bs-primary: var(--sq-primary);
+    --bs-primary-rgb: 30, 95, 138;
+    --bs-link-color: var(--sq-primary);
+    --bs-link-hover-color: var(--sq-primary-hover);
+    --bs-body-font-family: var(--sq-font-sans);
+    --bs-body-bg: var(--sq-body-bg);
+}
+
+body.sq-app {
+    font-family: var(--sq-font-sans);
+    background-color: var(--sq-body-bg);
+    color: #212529;
+}
+
+/* ----- Navbar – same bright blue as landing ----- */
+.sq-navbar {
+    background: var(--sq-primary) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sq-navbar .navbar-brand {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.sq-navbar .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+}
+
+/* ----- Main content area ----- */
+.sq-app main.container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    padding: 1.5rem 2rem;
+}
+
+/* ----- Buttons ----- */
+.btn-primary {
+    background-color: var(--sq-primary);
+    border-color: var(--sq-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--sq-primary-hover);
+    border-color: var(--sq-primary-hover);
+}
+
+.btn-outline-primary {
+    color: var(--sq-primary);
+    border-color: var(--sq-primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--sq-primary-light);
+    color: var(--sq-primary-hover);
+    border-color: var(--sq-primary-hover);
+}
+
+/* ----- Cards ----- */
+.sq-app .card {
+    border: 1px solid var(--sq-card-border);
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.sq-app .card-header {
+    background: var(--sq-primary-light);
+    border-bottom: 1px solid var(--sq-card-border);
+    font-weight: 600;
+    color: var(--sq-dark);
+}
+
+.sq-app .card-title {
+    color: var(--sq-dark);
+    font-weight: 600;
+}
+
+.sq-app .card.bg-light {
+    background: var(--sq-primary-light) !important;
+    border-color: rgba(30, 95, 138, 0.25);
+}
+
+/* ----- Badges ----- */
+.sq-app .badge.bg-primary {
+    background-color: var(--sq-primary) !important;
+}
+
+.sq-app .badge.bg-secondary {
+    background-color: var(--sq-text-muted) !important;
+}
+
+/* ----- Alerts ----- */
+.sq-app .alert-info,
+.sq-app .alert-primary {
+    background-color: var(--sq-primary-light);
+    border-color: rgba(30, 95, 138, 0.3);
+    color: var(--sq-dark);
+}
+
+.sq-app .alert-success {
+    border-left: 4px solid #198754;
+}
+
+.sq-app .alert-warning {
+    border-left: 4px solid #ffc107;
+}
+
+.sq-app .alert-danger {
+    border-left: 4px solid #dc3545;
+}
+
+/* ----- List groups ----- */
+.sq-app .list-group-item-action:hover {
+    background-color: var(--sq-primary-light);
+}
+
+.sq-app .list-group-item {
+    border-color: var(--sq-card-border);
+    border-radius: 8px !important;
+    margin-bottom: 0.5rem;
+}
+
+.sq-app .list-group-item:focus {
+    border-color: var(--sq-primary);
+    box-shadow: 0 0 0 2px var(--sq-primary-light);
+}
+
+/* ----- Tables ----- */
+.sq-app .table {
+    color: #212529;
+}
+
+.sq-app .table thead th {
+    background: var(--sq-primary-light);
+    color: var(--sq-dark);
+    font-weight: 600;
+    border-bottom: 2px solid var(--sq-card-border);
+}
+
+.sq-app .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.sq-app .table-hover tbody tr:hover {
+    background-color: var(--sq-primary-light);
+}
+
+.sq-app .table td,
+.sq-app .table th {
+    border-color: var(--sq-card-border);
+}
+
+/* ----- Breadcrumbs ----- */
+.sq-app .breadcrumb {
+    background: transparent;
+}
+
+.sq-app .breadcrumb-item a {
+    color: var(--sq-primary);
+}
+
+.sq-app .breadcrumb-item a:hover {
+    color: var(--sq-primary-hover);
+}
+
+.sq-app .breadcrumb-item.active {
+    color: var(--sq-text-muted);
+}
+
+/* ----- Forms ----- */
+.sq-app .form-control:focus,
+.sq-app .form-select:focus {
+    border-color: var(--sq-primary);
+    box-shadow: 0 0 0 3px var(--sq-primary-light);
+}
+
+.sq-app .form-label {
+    font-weight: 500;
+    color: var(--sq-dark);
+}
+
+/* ----- Links ----- */
+.sq-app a:not(.btn):not(.nav-link) {
+    color: var(--sq-primary);
+}
+
+.sq-app a:not(.btn):not(.nav-link):hover {
+    color: var(--sq-primary-hover);
+}
+
+/* ----- Text ----- */
+.sq-app .text-muted {
+    color: var(--sq-text-muted) !important;
+}
+
+.sq-app h1, .sq-app h2, .sq-app h3 {
+    color: var(--sq-dark);
+    font-weight: 600;
+}
+
+/* ----- Landing hero (unchanged, uses same palette) ----- */
+.landing-hero {
+    position: relative;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.landing-hero-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--sq-hero-bg);
+    z-index: 0;
+}
+
+.landing-hero-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 70% 50%, rgba(58, 124, 165, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.landing-hero .container {
+    z-index: 1;
+}
+
+.min-vh-75 {
+    min-height: 75vh;
+}
+
+.landing-badge {
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sq-accent);
+}
+
+.landing-title {
+    font-family: var(--sq-font-sans);
+    font-weight: 700;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    line-height: 1.1;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.landing-lead {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--sq-hero-muted);
+    max-width: 32em;
+}
+
+.landing-features {
+    color: var(--sq-hero-muted);
+    font-size: 1.05rem;
+}
+
+.landing-features li {
+    padding: 0.25rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.landing-features li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--sq-accent);
+    font-weight: 700;
+}
+
+.landing-cta-text {
+    color: var(--sq-hero-muted);
+    font-size: 1.05rem;
+}
+
+.landing-hero .btn-primary {
+    background: var(--sq-accent);
+    border-color: var(--sq-accent);
+}
+
+.landing-hero .btn-primary:hover {
+    background: #2d6a8a;
+    border-color: #2d6a8a;
+}
+
+.landing-hero .btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--sq-hero-text);
+}
+
+.landing-visual {
+    width: 200px;
+    height: 200px;
+    border-radius: 2rem;
+    background: rgba(58, 124, 165, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.landing-visual-icon {
+    font-size: 4rem;
+    color: rgba(255, 255, 255, 0.25);
+}
+
+/* Landing: let hero stretch full width and remove main chrome */
+.sq-app main.container:has(.landing-hero) {
+    background: transparent;
+    box-shadow: none;
+    padding: 1rem 2rem 0;
+    max-width: 100%;
+}
+
+.landing-hero {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    box-sizing: border-box;
+}
+
+.landing-hero .container {
+    max-width: 1140px;
+    margin: 0 auto;
+}

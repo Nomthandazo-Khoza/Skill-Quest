@@ -20,6 +20,9 @@
     </div>
     <div class="card-body">
         <p><strong>Submitted:</strong> {{ submission.submitted_at.strftime('%Y-%m-%d %H:%M') }}</p>
+        {% if submission.challenge.deadline %}
+        <p><strong>Challenge deadline:</strong> {{ submission.challenge.deadline.strftime('%Y-%m-%d') }}</p>
+        {% endif %}
         {% if admin_view %}
         <p><strong>Student:</strong> {{ submission.user.full_name }} ({{ submission.user.email }})</p>
         {% endif %}
